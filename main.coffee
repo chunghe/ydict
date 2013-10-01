@@ -15,15 +15,15 @@ if not q
 #url = 'http://tw.dictionary.yahoo.com/dictionary?p=amateur'
 url = "http://tw.dictionary.search.yahoo.com/search?p=#{q}&fr2=dict"
 console.log q
-sound_name = "#{q}.mp3"
+sound_local = "/tmp/#{q}.mp3"
 
 speak = (sound_url) ->
   request = http.get(sound_url, (rsp) ->
     rsp.on('data', (data) ->
-      fs.writeFile(sound_name, data)
+      fs.writeFile("#{sound_local}", data)
     )
     rsp.on('end', ->
-      exec("afplay #{sound_name}")
+      exec("afplay #{sound_local}")
     )
   )
 

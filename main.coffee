@@ -5,7 +5,13 @@ fs = require 'fs'
 child_process = require 'child_process'
 http = require 'http'
 exec = child_process.exec
+
 cheerio = require 'cheerio'
+argv = require('optimist')
+  .usage('command line interface for tw.dictionary.yahoo.com')
+  .alias('s', 'speak')
+  .describe('speak the word')
+  .argv
 
 q = process.argv[2]
 if not q
@@ -32,7 +38,7 @@ request(url, (error, rsp, body) ->
   data = []
   $pronun = $('.proun_wrapper')
   sound_url = $pronun.find('.proun_sound a').attr('href')
-  speak(sound_url) if sound_url
+  speak(sound_url) if sound_url and argv.speak
 
   console.log $pronun.text()
   $sections = $('.result_cluster_first .explanation_pos_wrapper')

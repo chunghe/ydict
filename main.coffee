@@ -1,6 +1,12 @@
 
 http = require 'http'
 request = require 'request'
+fs = require 'fs'
+child_process = require 'child_process'
+http = require 'http'
+#spawn = child_process.spawn
+#afplay = spawn 'afplay'
+exec = child_process.exec
 cheerio = require 'cheerio'
 
 q = process.argv[2]
@@ -15,6 +21,19 @@ request(url, (error, rsp, body) ->
   $ = cheerio.load(body)
   data = []
   $pronun = $('.proun_wrapper')
+  sound_url = $pronun.find('.proun_sound a').attr('href')
+  #request(sound_url).pipe(fs.createWriteStream("#{q}.mp3"))
+
+  request = http.get(sound_url, (rsp) ->
+    rsp.on('data', (data) ->
+      fs.appendFile("#{q}.mp3", data)
+    )
+    rsp.on('end', ->
+      exec("afplay #{q}.mp3")
+    )
+  )
+    
+  ###
   console.log $pronun.text()
   $sections = $('.result_cluster_first .explanation_pos_wrapper')
   $sections.each( (i, section) ->
@@ -32,4 +51,5 @@ request(url, (error, rsp, body) ->
       console.log "    #{sample}"
     )
   )
+  ###
 )

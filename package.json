@@ -1,0 +1,22 @@
+{
+  "author": "chunghe",
+  "name": "tw.dict",
+  "description": "command line interface for tw.dictionary.yahoo.com",
+  "version": "0.0.1",
+  "repository": {
+    "url": "https://github.com/chunghe/nodejs.twdict"
+  },
+  "bin": {
+    "dict": "./bin/dict"
+  },
+  "dependencies": {
+    "cheerio": "0.12.x",
+    "coffee-script": "~1.6.3",
+    "request": "~2.27.0"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}

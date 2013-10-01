@@ -18,8 +18,6 @@ console.log q
 sound_name = "#{q}.mp3"
 
 speak = (sound_url) ->
-  console.log 'sound_url', sound_url
-  console.log 'sound_name', sound_name
   request = http.get(sound_url, (rsp) ->
     rsp.on('data', (data) ->
       fs.writeFile(sound_name, data)

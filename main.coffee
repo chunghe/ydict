@@ -32,7 +32,7 @@ request(url, (error, rsp, body) ->
   data = []
   $pronun = $('.proun_wrapper')
   sound_url = $pronun.find('.proun_sound a').attr('href')
-  speak(sound_url)
+  speak(sound_url) if sound_url
 
   console.log $pronun.text()
   $sections = $('.result_cluster_first .explanation_pos_wrapper')

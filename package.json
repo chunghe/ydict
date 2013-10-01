@@ -2,12 +2,12 @@
   "author": "chunghe",
   "name": "tw.dict",
   "description": "command line interface for tw.dictionary.yahoo.com",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "repository": {
     "url": "https://github.com/chunghe/nodejs.twdict"
   },
   "bin": {
-    "dict": "./bin/dict"
+    "dict": "./bin/dict.js"
   },
   "dependencies": {
     "cheerio": "0.12.x",
@@ -18,5 +18,12 @@
   "optionalDependencies": {},
   "engines": {
     "node": "*"
-  }
+  },
+  "readmeFilename": "README.md",
+  "gitHead": "a8f922a1b65dbfe00279ee09fab6f246a806a963",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "BSD"
 }

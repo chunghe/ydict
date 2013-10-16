@@ -6,6 +6,7 @@ child_process = require 'child_process'
 http = require 'http'
 exec = child_process.exec
 
+
 cheerio = require 'cheerio'
 argv = require('optimist')
   .usage('command line interface for tw.dictionary.yahoo.com')
@@ -13,7 +14,7 @@ argv = require('optimist')
   .describe('speak the word')
   .argv
 
-q = process.argv[2]
+q = argv.speak
 if not q
   console.log 'please sepcify keyword'
 
@@ -22,11 +23,13 @@ if not q
 url = "http://tw.dictionary.search.yahoo.com/search?p=#{q}&fr2=dict"
 console.log q
 sound_local = "/tmp/#{q}.mp3"
+file = fs.createWriteStream(sound_local)
 
 speak = (sound_url) ->
   request = http.get(sound_url, (rsp) ->
     rsp.on('data', (data) ->
-      fs.writeFile("#{sound_local}", data)
+      #fs.writeFile("#{sound_local}", data)
+      file.write(data)
     )
     rsp.on('end', ->
       exec("afplay #{sound_local}")

@@ -32,6 +32,7 @@ speak = (sound_url) ->
       file.write(data)
     )
     rsp.on('end', ->
+      file.end()
       exec("afplay #{sound_local}")
     )
   )

@@ -14,14 +14,16 @@ argv = require('optimist')
   .describe('speak the word')
   .argv
 
-q = argv.speak
+# And non-hypenated options too! Just use argv._!
+q = argv.speak || argv._[0]
 if not q
   console.log 'please sepcify keyword'
+  process.exit(1)
 
 
 #url = 'http://tw.dictionary.yahoo.com/dictionary?p=amateur'
 url = "http://tw.dictionary.search.yahoo.com/search?p=#{q}&fr2=dict"
-console.log q
+console.log  q
 sound_local = "/tmp/#{q}.mp3"
 file = fs.createWriteStream(sound_local)
 

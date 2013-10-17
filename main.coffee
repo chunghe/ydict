@@ -23,7 +23,6 @@ if not q
 
 #url = 'http://tw.dictionary.yahoo.com/dictionary?p=amateur'
 url = "http://tw.dictionary.search.yahoo.com/search?p=#{q}&fr2=dict"
-console.log  q
 sound_local = "/tmp/#{q}.mp3"
 file = fs.createWriteStream(sound_local)
 
@@ -42,6 +41,8 @@ speak = (sound_url) ->
 request(url, (error, rsp, body) ->
   $ = cheerio.load(body)
   data = []
+  word = $('.title_term .yschttl').text()
+  console.log word
   $pronun = $('.proun_wrapper')
   sound_url = $pronun.find('.proun_sound a').attr('href')
   speak(sound_url) if sound_url and argv.speak

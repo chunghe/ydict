@@ -15,7 +15,7 @@ argv = require('optimist')
   .argv
 
 # And non-hypenated options too! Just use argv._!
-q = argv.speak || argv._[0]
+q = argv._[0] or argv.speak
 if not q
   console.log 'please sepcify keyword'
   process.exit(1)

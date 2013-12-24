@@ -43,6 +43,10 @@ request(url, (error, rsp, body) ->
   data = []
   word = $('.title_term .yschttl').text()
   console.log word
+  request("http://dict.chunghe.me/rank/#{word}", (error, rsp, body) ->
+    if (rsp.statusCode isnt 404)
+      console.log "word frequency rank: ##{JSON.parse(body).rank}"
+  )
   $pronun = $('.proun_wrapper')
   sound_url = $pronun.find('.proun_sound a').attr('href')
   speak(sound_url) if sound_url and argv.speak

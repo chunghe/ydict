@@ -5,7 +5,7 @@ nodejs.twdict
 ### introduction
 a command line dictionary tool
 
-### usage:
+### usage
 $ nmp install -g tw.dict
 $ dict domestic
 

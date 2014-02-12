@@ -13,6 +13,8 @@ argv = require('optimist')
   .usage('command line interface for tw.dictionary.yahoo.com')
   .alias('s', 'speak')
   .describe('speak the word')
+  .alias('r', 'rank')
+  .describe('display rank information')
   .argv
 
 # And non-hypenated options too! Just use argv._!
@@ -39,7 +41,6 @@ speak = (sound_url) ->
     )
   )
 
-# http://dict.chunghe.me/rank/tongs
 async.parallel([
   ->
     request(url, (error, rsp, body) ->
@@ -71,6 +72,7 @@ async.parallel([
     )
   ,
   ->
+    return false unless argv.rank
     request("http://dict.chunghe.me/rank/#{q}", (error, rsp, body) ->
       body = JSON.parse(body)
       console.log "rank: ##{body.rank}"

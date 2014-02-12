@@ -2,7 +2,7 @@
   "author": "chunghe",
   "name": "tw.dict",
   "description": "command line interface for tw.dictionary.yahoo.com",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "repository": {
     "url": "https://github.com/chunghe/nodejs.twdict"
   },

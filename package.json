@@ -2,7 +2,7 @@
   "author": "chunghe",
   "name": "tw.dict",
   "description": "command line interface for tw.dictionary.yahoo.com",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "repository": {
     "url": "https://github.com/chunghe/nodejs.twdict"
   },
@@ -13,7 +13,8 @@
     "cheerio": "0.12.x",
     "coffee-script": "~1.6.3",
     "request": "~2.27.0",
-    "optimist": "~0.6.0"
+    "optimist": "~0.6.0",
+    "async": "~0.2.10"
   },
   "devDependencies": {},
   "optionalDependencies": {},

@@ -5,9 +5,11 @@ ydict
 ### introduction
 a command line interface for tw.dictionary.yahoo.com
 
-### usage
+### install
 $ `nmp install -g ydict`
 
+
+### usage
 $ `ydict <vocabulary>` 
 
 $ `yidct <vocabulary> -s` also pronunciate the vocabulary

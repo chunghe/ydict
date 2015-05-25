@@ -1,90 +1,113 @@
+#!/usr/bin/env node
 
-var argv, async, cheerio, child_process, exec, file, fs, http, q, request, sound_local, speak, url;
+var https = require('https');
+var fs = require('fs');
+var child_process = require('child_process');
 
-http = require('http');
+var meow = require('meow');
+var Promise = require('bluebird');
+var fetch = require('node-fetch');
+fetch.Promise = Promise;
+var cheerio = require('cheerio');
 
-request = require('request');
+var cli = meow({
+  help: [
+    'Usage',
+    '  ydict <vocabulary>',
+    '  ydict <vocabulary> -s: pronunciate',
+    '  ydict --help          : display help ',
+    'Options',
+    '  -s   prouncate the vocabulary'
+  ].join('\n')
+});
+var fetch_headers = {'Referer': 'https://tw.dictionary.yahoo.com/dictionary'};
 
-fs = require('fs');
-
-child_process = require('child_process');
-
-http = require('http');
-
-exec = child_process.exec;
-
-async = require('async');
-
-cheerio = require('cheerio');
-
-argv = require('optimist').usage('command line interface for tw.dictionary.yahoo.com').alias('s', 'speak').describe('speak the word').alias('r', 'rank').describe('display rank information').argv;
-
-q = argv._[0] || argv.speak;
-
-if (!q) {
-  console.log('please sepcify keyword');
-  process.exit(1);
+// parse html to produce a JSON representation
+function parseBody(body) {
+  var $ = cheerio.load(body);
+  var word = $('.summary').eq(0).find('h2').text();
+  if (!word) {
+    throw new Error('vocabulary not found.');
+  }
+  var sound_src = $('source[src]').attr('src');
+  var $pronun = $('.pronun');
+  var kk = $('dl dd', $pronun).eq(0).text();
+  var dj = $('dl dd', $pronun).eq(1).text();
+  var $expLists = $('.exp-list');
+  var explanations = $expLists.map(function(i, el) {
+    var $el = $(el)
+    var expItems = $el.find('.exp-item');
+    var type = $el.prev().text();
+    var items = expItems.map(function(j, item) {
+      return {
+        exp: $(item).find('.exp').text(),
+        sample: $(item).find('.sample').text().replace(/\s+/g, ' ').trim()
+      }
+    })
+    return {type: type, items: items};
+  });
+  return {
+    sound_src: sound_src,
+    pronun: {kk: kk, dj: dj},
+    word: word,
+    explanations: explanations
+  };
 }
 
-url = "http://tw.dictionary.search.yahoo.com/search?p=" + q + "&fr2=dict";
-
-sound_local = "/tmp/" + q + ".mp3";
-
-file = fs.createWriteStream(sound_local);
-
-speak = function(sound_url) {
-  return request = http.get(sound_url, function(rsp) {
-    rsp.on('data', function(data) {
-      return file.write(data);
+function printResult(o) {
+  console.log(o.word);
+  console.log('KK' + o.pronun.kk + ' DJ' + o.pronun.dj + '\n');
+  o.explanations.forEach(function(explanation) {
+    console.log(explanation.type);
+    explanation.items.forEach(function (item, index) {
+      console.log( (index + 1) + '. ' + item.exp);
+      if (item.sample)
+        console.log('   ' + item.sample);
     });
-    return rsp.on('end', function() {
-      file.end();
-      return exec("afplay " + sound_local);
-    });
+    console.log('');
   });
-};
+  return Promise.resolve(o);
+}
 
-async.parallel([
-  function() {
-    return request(url, function(error, rsp, body) {
-      var $, $pronun, $sections, data, sound_url, word;
-      $ = cheerio.load(body);
-      data = [];
-      word = $('.title_term .yschttl').text();
-      console.log(word);
-      $pronun = $('.proun_wrapper');
-      sound_url = $pronun.find('.proun_sound a').attr('href');
-      if (sound_url && argv.speak) {
-        speak(sound_url);
+function playSound(o) {
+  var sound_local = '/tmp/' + o.word + '.mp3';
+  var file = fs.createWriteStream(sound_local);
+  https.get(o.sound_src, function (rsp) {
+    rsp.on('data', function (data) {
+      return file.write(data);
+    })
+    rsp.on('end', function () {
+      file.end();
+      try {
+        child_process.exec("afplay " + sound_local);
+      } 
+      catch(e) {
+        // die silently
       }
-      console.log($pronun.text());
-      $sections = $('.result_cluster_first .explanation_pos_wrapper');
-      return $sections.each(function(i, section) {
-        var $exp_item, $hd, $section, abbr, desc;
-        $section = $(section);
-        $hd = $section.find('.explanation_group_hd');
-        abbr = $hd.find('.pos_abbr').text();
-        desc = $hd.find('.pos_desc').text();
-        $exp_item = $section.find('.explanation_ol li');
-        console.log(abbr + "  " + desc);
-        return $exp_item.each(function(index, item) {
-          var $item, exp, sample;
-          $item = $(item);
-          exp = $item.find('.explanation').text();
-          sample = $item.find('.sample').text();
-          console.log((index + 1) + ". " + exp);
-          return console.log("    " + sample);
-        });
-      });
-    });
-  }, function() {
-    if (!argv.rank) {
-      return false;
-    }
-    return request("http://dict.chunghe.me/rank/" + q, function(error, rsp, body) {
-      body = JSON.parse(body);
-      return console.log("rank: #" + body.rank);
-    });
-  }
-]);
+    })
+  })
+}
 
+if (cli.input.length === 0) {
+    console.log('please input one vocabulary');
+} else {
+  var q = cli.input[0];
+  var url = "https://tw.dictionary.yahoo.com/dictionary?p=" + q;
+
+  var runner = 
+    fetch(url, {headers: fetch_headers})
+      .then(function(res) {
+        return res.text();
+      })
+      .then(parseBody)
+      .then(printResult)
+  
+  if (cli.flags.s) {
+    runner
+      .then(playSound)
+      .catch(console.log.bind(console));
+  } else {
+    runner
+      .catch(console.log.bind(console));
+  }
+}

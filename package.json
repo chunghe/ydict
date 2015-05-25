@@ -1,19 +1,19 @@
 {
   "author": "chunghe",
-  "name": "tw.dict",
+  "name": "ydict",
   "description": "command line interface for tw.dictionary.yahoo.com",
-  "version": "0.2.3",
+  "version": "0.2.6",
   "repository": {
-    "url": "https://github.com/chunghe/nodejs.twdict"
+    "url": "https://github.com/chunghe/ydict"
   },
   "bin": {
-    "dict": "./bin/dict.js"
+    "ydict": "./index.js"
   },
   "dependencies": {
+    "bluebird": "^2.9.25",
     "cheerio": "0.12.x",
-    "request": "~2.27.0",
-    "optimist": "~0.6.0",
-    "async": "~0.2.10"
+    "meow": "^3.1.0",
+    "node-fetch": "^1.2.1"
   },
   "devDependencies": {},
   "optionalDependencies": {},
@@ -21,10 +21,6 @@
     "node": "*"
   },
   "readmeFilename": "README.md",
-  "gitHead": "a8f922a1b65dbfe00279ee09fab6f246a806a963",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "license": "BSD"
 }

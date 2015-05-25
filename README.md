@@ -6,8 +6,10 @@ ydict
 a command line interface for tw.dictionary.yahoo.com
 
 ### usage
-$ `nmp install -g tw.dict`
+$ `nmp install -g ydict`
+
 $ `ydict <vocabulary>` 
+
 $ `yidct <vocabulary> -s` also pronunciate the vocabulary
 
 ### screenshots

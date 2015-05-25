@@ -2,7 +2,7 @@
   "author": "chunghe",
   "name": "ydict",
   "description": "command line interface for tw.dictionary.yahoo.com",
-  "version": "0.2.6",
+  "version": "0.2.8",
   "repository": {
     "url": "https://github.com/chunghe/ydict"
   },

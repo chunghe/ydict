@@ -7,7 +7,9 @@ a command line interface for tw.dictionary.yahoo.com
 
 ### usage
 $ `nmp install -g ydict`
+
 $ `ydict <vocabulary>` 
+
 $ `yidct <vocabulary> -s` also pronunciate the vocabulary
 
 ### screenshots

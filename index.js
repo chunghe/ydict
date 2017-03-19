@@ -27,12 +27,13 @@ function parseBody(body) {
   var $ = cheerio.load(body);
   var word = $('.summary').eq(0).find('h2').text();
   if (!word) {
-    throw new Error('vocabulary not found.');
+    console.log('vocabulary not found.');
+    return null;
   }
-  var sound_src = $('source[src]').attr('src');
+  var sound_src = $('audio').attr('src');
   var $pronun = $('.pronun');
-  var kk = $('dl dd', $pronun).eq(0).text();
-  var dj = $('dl dd', $pronun).eq(1).text();
+  var kk = $('span dd', $pronun).eq(0).text();
+  var dj = $('span dd', $pronun).eq(1).text();
   var $expLists = $('.exp-list');
   var explanations = $expLists.map(function(i, el) {
     var $el = $(el)
@@ -55,6 +56,9 @@ function parseBody(body) {
 }
 
 function printResult(o) {
+  if (!o) {
+    return;
+  }
   console.log(o.word);
   console.log('KK' + o.pronun.kk + ' DJ' + o.pronun.dj + '\n');
   o.explanations.forEach(function(explanation) {
